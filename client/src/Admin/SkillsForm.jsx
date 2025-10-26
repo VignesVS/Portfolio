@@ -1,135 +1,135 @@
 import React, { useEffect, useState } from "react";
 import adminApi from "../api/adminApi";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
-const SkillsForm = () => {
-  const [skills, setSkills] = useState([]);
-  const [newSkill, setNewSkill] = useState({ name: "", logo: null });
-  const [preview, setPreview] = useState(null);
-  const [message, setMessage] = useState("");
+const AboutForm = () => {
+  const [about, setAbout] = useState({
+    title: "",
+    description: "",
+    image: "",
+  });
+  const [preview, setPreview] = useState("");
 
-  // Fetch all skills
+  // ✅ Fetch About data
   useEffect(() => {
-    const fetchSkills = async () => {
+    const fetchAbout = async () => {
       try {
-        const res = await adminApi.get("/skills");
-        setSkills(res.data);
+        const res = await adminApi.get("/about");
+        console.log("Fetched About Data:", res.data); // 🔍 Debug log
+
+        // 🔹 Handle if response is array or object
+        let aboutData = res.data;
+        if (Array.isArray(aboutData)) {
+          aboutData = aboutData[0]; // If backend returns an array, take first
+        } else if (aboutData.about) {
+          aboutData = aboutData.about; // If wrapped in object
+        }
+
+        console.log(aboutData);
+
+        if (aboutData) {
+          setAbout({
+            title: aboutData.title || "",
+            description: aboutData.description || "",
+            image: aboutData.image || "",
+          });
+          setPreview(aboutData.image || "");
+        }
       } catch (err) {
-        console.log(err);
+        console.error("Fetch error:", err);
+        toast.error("❌ Failed to fetch About section!");
       }
     };
-    fetchSkills();
+
+    fetchAbout();
   }, []);
 
-  // Handle new skill input change
+  // ✅ Handle text input
   const handleChange = (e) => {
-    setNewSkill({ ...newSkill, name: e.target.value });
+    const { name, value } = e.target;
+    setAbout({ ...about, [name]: value });
   };
 
-  // Handle image selection
+  // ✅ Handle image change
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
-      setNewSkill({ ...newSkill, logo: file });
+      setAbout({ ...about, image: file });
       setPreview(URL.createObjectURL(file));
     }
   };
 
-  // Add new skill
-  const handleAdd = async (e) => {
+  // ✅ Submit form
+  const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       const formData = new FormData();
-      formData.append("name", newSkill.name);
-      if (newSkill.logo) formData.append("logo", newSkill.logo);
+      formData.append("title", about.title);
+      formData.append("description", about.description);
+      if (about.image instanceof File) formData.append("image", about.image);
 
-      const res = await adminApi.post("/skills", formData, {
+      await adminApi.put("/about", formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
 
-      setSkills([...skills, res.data]);
-      setNewSkill({ name: "", logo: null });
-      setPreview(null);
-      setMessage("Skill added successfully!");
+      toast.success("✅ About section updated successfully!");
     } catch (err) {
-      console.log(err);
-      setMessage("Failed to add skill.");
-    }
-  };
-
-  // Delete skill
-  const handleDelete = async (id) => {
-    try {
-      await adminApi.delete(`/skills/${id}`);
-      setSkills(skills.filter((skill) => skill._id !== id));
-      setMessage("Skill deleted successfully!");
-    } catch (err) {
-      console.log(err);
-      setMessage("Failed to delete skill.");
+      console.error("Update error:", err);
+      toast.error("❌ Failed to update About section!");
     }
   };
 
   return (
-    <div className="max-w-3xl mx-auto">
-      <h2 className="text-3xl font-bold text-cyan-400 mb-6">Manage Skills</h2>
-      {message && <p className="mb-4 text-green-400">{message}</p>}
+    <div className="max-w-2xl mx-auto">
+      <ToastContainer position="top-center" autoClose={2000} hideProgressBar />
+      <h2 className="text-3xl font-bold text-cyan-400 mb-6">Edit About Section</h2>
 
-      {/* Add New Skill */}
-      <form onSubmit={handleAdd} className="flex flex-col gap-4 mb-8">
+      <form onSubmit={handleSubmit} className="flex flex-col gap-4">
         <input
           type="text"
-          placeholder="Skill Name"
-          value={newSkill.name}
+          name="title"
+          value={about.title}
           onChange={handleChange}
+          placeholder="Title"
           className="p-2 rounded bg-gray-700 text-white"
           required
         />
+
+        <textarea
+          name="description"
+          value={about.description}
+          onChange={handleChange}
+          placeholder="Description"
+          className="p-2 rounded bg-gray-700 text-white"
+          rows={6}
+          required
+        />
+
         <input
           type="file"
           accept="image/*"
           onChange={handleImageChange}
           className="text-white"
         />
+
         {preview && (
           <img
             src={preview}
             alt="Preview"
-            className="w-20 h-20 object-contain rounded-full shadow-lg"
+            className="w-80 h-80 object-cover rounded-2xl shadow-lg mt-2"
           />
         )}
+
         <button
           type="submit"
           className="bg-cyan-500 hover:bg-cyan-600 py-2 rounded font-semibold transition-colors"
         >
-          Add Skill
+          Save Changes
         </button>
       </form>
-
-      {/* List of Skills */}
-      <div className="grid grid-cols-3 gap-6">
-        {skills.map((skill) => (
-          <div
-            key={skill._id}
-            className="flex flex-col items-center justify-center text-center bg-gray-800 p-4 rounded-lg shadow-lg"
-          >
-            {skill.logo && (
-              <img
-                src={skill.logo}
-                alt={skill.name}
-                className="w-16 h-16 object-contain rounded-full mb-2"
-              />
-            )}
-            <p className="text-white font-semibold">{skill.name}</p>
-            <button
-              onClick={() => handleDelete(skill._id)}
-              className="mt-2 bg-red-500 hover:bg-red-600 py-1 px-3 rounded text-sm transition-colors"
-            >
-              Delete
-            </button>
-          </div>
-        ))}
-      </div>
     </div>
   );
 };
 
-export default SkillsForm;
+export default AboutForm;

@@ -1,5 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import adminApi from "../api/adminApi";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const CertificationsForm = () => {
   const [certifications, setCertifications] = useState([]);
@@ -11,7 +13,9 @@ const CertificationsForm = () => {
     description: "",
   });
   const [preview, setPreview] = useState(null);
-  const [message, setMessage] = useState("");
+  const [editId, setEditId] = useState(null); // Track which cert is being edited
+
+  const formRef = useRef(null); // For smooth scrolling
 
   // Fetch all certifications
   useEffect(() => {
@@ -21,6 +25,7 @@ const CertificationsForm = () => {
         setCertifications(res.data);
       } catch (err) {
         console.log(err);
+        toast.error("❌ Failed to fetch certifications!");
       }
     };
     fetchCerts();
@@ -41,8 +46,13 @@ const CertificationsForm = () => {
     }
   };
 
-  // Add new certification
-  const handleAdd = async (e) => {
+  // Scroll smoothly to form
+  const scrollToForm = () => {
+    formRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
+
+  // Add or Update certification
+  const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       const formData = new FormData();
@@ -52,17 +62,32 @@ const CertificationsForm = () => {
       formData.append("description", newCert.description);
       if (newCert.image) formData.append("image", newCert.image);
 
-      const res = await adminApi.post("/certifications", formData, {
-        headers: { "Content-Type": "multipart/form-data" },
-      });
+      let res;
+      if (editId) {
+        // Update existing
+        res = await adminApi.put(`/certifications/${editId}`, formData, {
+          headers: { "Content-Type": "multipart/form-data" },
+        });
+        setCertifications(
+          certifications.map((c) => (c._id === editId ? res.data : c))
+        );
+        toast.success("✅ Certification updated successfully!");
+      } else {
+        // Add new
+        res = await adminApi.post("/certifications", formData, {
+          headers: { "Content-Type": "multipart/form-data" },
+        });
+        setCertifications([...certifications, res.data]);
+        toast.success("✅ Certification added successfully!");
+      }
 
-      setCertifications([...certifications, res.data]);
+      // Reset form
       setNewCert({ name: "", image: null, issuer: "", date: "", description: "" });
       setPreview(null);
-      setMessage("Certification added successfully!");
+      setEditId(null);
     } catch (err) {
-      console.log(err);
-      setMessage("Failed to add certification.");
+      console.log("Error:", err);
+      toast.error("❌ Failed to save certification!");
     }
   };
 
@@ -71,20 +96,39 @@ const CertificationsForm = () => {
     try {
       await adminApi.delete(`/certifications/${id}`);
       setCertifications(certifications.filter((c) => c._id !== id));
-      setMessage("Certification deleted successfully!");
+      toast.success("✅ Certification deleted successfully!");
     } catch (err) {
       console.log(err);
-      setMessage("Failed to delete certification.");
+      toast.error("❌ Failed to delete certification!");
     }
+  };
+
+  // Edit certification
+  const handleEdit = (cert) => {
+    setNewCert({
+      name: cert.name,
+      image: null, // keep null, image can be updated separately
+      issuer: cert.issuer || "",
+      date: cert.date || "",
+      description: cert.description || "",
+    });
+    setPreview(cert.image || null);
+    setEditId(cert._id);
+    scrollToForm();
   };
 
   return (
     <div className="max-w-4xl mx-auto">
-      <h2 className="text-3xl font-bold text-cyan-400 mb-6">Manage Certifications</h2>
-      {message && <p className="mb-4 text-green-400">{message}</p>}
+      <ToastContainer position="top-center" autoClose={2000} hideProgressBar />
 
-      {/* Add New Certification */}
-      <form onSubmit={handleAdd} className="flex flex-col gap-4 mb-8">
+      <h2 className="text-3xl font-bold text-cyan-400 mb-6">Manage Certifications</h2>
+
+      {/* Add / Edit Certification */}
+      <form
+        onSubmit={handleSubmit}
+        className="flex flex-col gap-4 mb-8"
+        ref={formRef}
+      >
         <input
           type="text"
           placeholder="Certification Name"
@@ -135,7 +179,7 @@ const CertificationsForm = () => {
           type="submit"
           className="bg-cyan-500 hover:bg-cyan-600 py-2 rounded font-semibold transition-colors"
         >
-          Add Certification
+          {editId ? "Update Certification" : "Add Certification"}
         </button>
       </form>
 
@@ -159,12 +203,20 @@ const CertificationsForm = () => {
             {cert.description && (
               <p className="text-gray-300 text-sm mt-1">{cert.description}</p>
             )}
-            <button
-              onClick={() => handleDelete(cert._id)}
-              className="mt-2 bg-red-500 hover:bg-red-600 py-1 px-3 rounded text-sm transition-colors"
-            >
-              Delete
-            </button>
+            <div className="mt-2 flex gap-2">
+              <button
+                onClick={() => handleEdit(cert)}
+                className="bg-yellow-500 hover:bg-yellow-600 py-1 px-3 rounded text-sm transition-colors"
+              >
+                Edit
+              </button>
+              <button
+                onClick={() => handleDelete(cert._id)}
+                className="bg-red-500 hover:bg-red-600 py-1 px-3 rounded text-sm transition-colors"
+              >
+                Delete
+              </button>
+            </div>
           </div>
         ))}
       </div>

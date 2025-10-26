@@ -5,8 +5,7 @@ import "react-toastify/dist/ReactToastify.css";
 
 const AboutForm = () => {
   const [about, setAbout] = useState({
-    title: "",
-    description: "",
+    content: "",
     image: "",
   });
   const [preview, setPreview] = useState("");
@@ -16,23 +15,23 @@ const AboutForm = () => {
     const fetchAbout = async () => {
       try {
         const res = await adminApi.get("/about");
-        setAbout(res.data);
-        setPreview(res.data.image);
+        if (res.data) {
+          setAbout(res.data);
+          setPreview(res.data.image || "");
+        }
       } catch (err) {
-        console.error(err);
+        console.error("Error fetching About:", err);
         toast.error("❌ Failed to fetch About section!");
       }
     };
     fetchAbout();
   }, []);
 
-  // Handle input changes
   const handleChange = (e) => {
     const { name, value } = e.target;
     setAbout({ ...about, [name]: value });
   };
 
-  // Handle image selection
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -41,24 +40,35 @@ const AboutForm = () => {
     }
   };
 
-  // Submit form
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const formData = new FormData();
-      formData.append("title", about.title);
-      formData.append("description", about.description);
+      let payload;
+      let headers;
+
       if (about.image instanceof File) {
-        formData.append("image", about.image);
+        payload = new FormData();
+        payload.append("content", about.content);
+        payload.append("image", about.image);
+        headers = { "Content-Type": "multipart/form-data" };
+      } else {
+        payload = {
+          content: about.content,
+          image: about.image,
+        };
+        headers = { "Content-Type": "application/json" };
       }
 
-      await adminApi.put("/about", formData, {
-        headers: { "Content-Type": "multipart/form-data" },
-      });
+      const res = await adminApi.put("/about", payload, { headers });
+
+      if (res.data) {
+        setAbout(res.data);
+        setPreview(res.data.image || preview);
+      }
 
       toast.success("✅ About section updated successfully!");
     } catch (err) {
-      console.error(err);
+      console.error("Error updating About:", err);
       toast.error("❌ Failed to update About section!");
     }
   };
@@ -66,26 +76,15 @@ const AboutForm = () => {
   return (
     <div className="max-w-2xl mx-auto">
       <ToastContainer position="top-center" autoClose={2000} hideProgressBar />
-
       <h2 className="text-3xl font-bold text-cyan-400 mb-6">Edit About Section</h2>
-
       <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-        <input
-          type="text"
-          name="title"
-          value={about.title}
-          onChange={handleChange}
-          placeholder="Title"
-          className="p-2 rounded bg-gray-700 text-white"
-          required
-        />
         <textarea
-          name="description"
-          value={about.description}
+          name="content"
+          value={about.content}
           onChange={handleChange}
-          placeholder="Description"
+          placeholder="About content"
           className="p-2 rounded bg-gray-700 text-white"
-          rows={6}
+          rows={10}
           required
         />
         <input
@@ -94,7 +93,6 @@ const AboutForm = () => {
           onChange={handleImageChange}
           className="text-white"
         />
-
         {preview && (
           <img
             src={preview}
@@ -102,7 +100,6 @@ const AboutForm = () => {
             className="w-80 h-80 object-cover rounded-2xl shadow-lg mt-2"
           />
         )}
-
         <button
           type="submit"
           className="bg-cyan-500 hover:bg-cyan-600 py-2 rounded font-semibold transition-colors"
