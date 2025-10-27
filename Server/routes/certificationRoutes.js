@@ -15,7 +15,7 @@ router.get("/", getCertifications);
 
 // Admin routes
 router.post("/", upload.single("image"), addCertification);
-router.put("/:id", upload.single("image"), updateCertification);
-router.delete("/:id", deleteCertification);
+router.put("/:id",protect, upload.single("image"), updateCertification);
+router.delete("/:id",protect, deleteCertification);
 
 export default router;

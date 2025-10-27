@@ -9,6 +9,6 @@ const router = express.Router();
 router.get("/", getAbout);
 
 // Admin-only route with file upload
-router.put("/", upload.single("image"), updateAbout);
+router.put("/", protect,upload.single("image"), updateAbout);
 
 export default router;

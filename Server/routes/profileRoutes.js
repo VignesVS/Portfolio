@@ -2,7 +2,7 @@ import express from "express";
 import multer from "multer";
 import { CloudinaryStorage } from "multer-storage-cloudinary";
 import { cloudinary, upload } from "../config/cloudinary.js";
-
+import { protect } from "../middleware/authMiddleware.js";
 import { getProfile, updateProfile } from "../controllers/profileController.js";
 
 const router = express.Router();
@@ -20,7 +20,7 @@ const parser = multer({ storage });
 
 // Routes
 router.get("/", getProfile);
-router.put("/", upload.single("profileImage"), updateProfile);
+router.put("/",protect, upload.single("profileImage"), updateProfile);
 
 
 export default router;

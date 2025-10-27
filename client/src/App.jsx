@@ -9,10 +9,12 @@ import Projects from "./components/Projects";
 import Skills from "./components/Skills";
 import Contact from "./components/Contact";
 import CertificationsPage from "./pages/CertificationsPage";
+import Experience from "./components/Experience";
+
 
 const PrivateRoute = ({ children }) => {
   const token = localStorage.getItem("adminToken");
-  return token ? children : <Navigate to="/admin/login" />;
+  return token ? children : <Navigate to="/admin/login" replace />;
 };
 
 function App() {
@@ -26,20 +28,18 @@ function App() {
             <>
               <Hero />
               <About />
+              <Experience/>
               <Skills />
               <Contact />
             </>
           }
         />
 
-        {/* Projects and Certifications separate pages */}
         <Route path="/projects" element={<Projects />} />
         <Route path="/certifications" element={<CertificationsPage />} />
 
-        {/* Admin Login */}
         <Route path="/admin/login" element={<AdminLogin />} />
 
-        {/* Admin Dashboard protected */}
         <Route
           path="/admin"
           element={
@@ -48,6 +48,9 @@ function App() {
             </PrivateRoute>
           }
         />
+
+        {/* Fallback route */}
+        <Route path="*" element={<Navigate to="/" />} />
       </Routes>
     </Router>
   );

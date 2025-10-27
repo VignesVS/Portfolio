@@ -19,12 +19,6 @@ const storage = new CloudinaryStorage({
   },
 });
 
-console.log(
-  "Cloudinary keys:",
-  process.env.CLOUDINARY_CLOUD_NAME,
-  process.env.CLOUDINARY_API_KEY,
-  process.env.CLOUDINARY_API_SECRET
-);
 
 
 const upload = multer({ storage });

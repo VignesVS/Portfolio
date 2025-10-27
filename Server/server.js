@@ -16,9 +16,7 @@ import aboutRoutes from "./routes/aboutRoutes.js";
 import contactRoutes from "./routes/contactRoutes.js";
 
 // Debug .env variables
-console.log("EMAIL_USER:", process.env.EMAIL_USER);
-console.log("EMAIL_PASS:", process.env.EMAIL_PASS);
-console.log("TO_EMAIL:", process.env.TO_EMAIL);
+
 
 connectDB();
 

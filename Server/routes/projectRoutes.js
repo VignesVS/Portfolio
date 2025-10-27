@@ -14,8 +14,8 @@ const router = express.Router();
 router.get("/", getProjects);
 
 // Admin routes with file upload
-router.post("/", upload.single("image"), addProject);
-router.put("/:id", upload.single("image"), updateProject);
-router.delete("/:id", deleteProject);
+router.post("/", protect,upload.single("image"), addProject);
+router.put("/:id",protect, upload.single("image"), updateProject);
+router.delete("/:id",protect, deleteProject);
 
 export default router;
