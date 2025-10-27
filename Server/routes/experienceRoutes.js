@@ -1,12 +1,18 @@
 import express from "express";
-import { getExperiences, addExperience, updateExperience, deleteExperience } from "../controllers/MyworkController.js";
-import { protect } from "../middleware/authMiddleware.js";
+import {
+  getExperiences,
+  addExperience,
+  updateExperience,
+  deleteExperience,
+} from "../controllers/MyworkController.js";
+import { protect } from "../middleware/authMiddleware.js"; // 👈 this line
 
 const router = express.Router();
 
-router.get("/", getExperiences);            // Public
-router.post("/", protect,addExperience);   // Admin only
-router.put("/:id",protect, updateExperience);   // Admin only
-router.delete("/:id",protect, deleteExperience); // Admin only
+// routes
+router.get("/", getExperiences);
+router.post("/", protect, addExperience);     // 👈 protected
+router.put("/:id",protect, updateExperience); // 👈 protected
+router.delete("/:id",protect, deleteExperience); // 👈 protected
 
 export default router;
