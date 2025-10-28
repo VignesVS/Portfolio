@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { motion } from "framer-motion";
 import adminApi from "../api/adminApi";
 
 const Projects = () => {
@@ -12,19 +13,46 @@ const Projects = () => {
       .catch((err) => console.log(err));
   }, []);
 
-  return (
-    <section id="projects" className="py-20 bg-gray-800 text-white relative">
-      <div className="max-w-6xl mx-auto">
-        <h2 className="text-4xl font-bold text-cyan-400 mb-10 text-center">
-          Projects
-        </h2>
+  // Animation variants
+  const fadeUp = {
+    hidden: { opacity: 0, y: 50 },
+    visible: { opacity: 1, y: 0 },
+  };
 
-        {/* Grid with 3cm gap */}
+  const fadeInScale = {
+    hidden: { opacity: 0, scale: 0.95 },
+    visible: { opacity: 1, scale: 1 },
+  };
+
+  return (
+    <section id="projects" className="py-20 bg-gray-800 text-white relative overflow-hidden">
+      <div className="max-w-6xl mx-auto">
+        <motion.h2
+          className="text-4xl font-bold text-cyan-400 mb-10 text-center"
+          variants={fadeUp}
+          initial="hidden"
+          whileInView="visible"
+          transition={{ duration: 0.6, ease: "easeOut" }}
+          viewport={{ once: false, amount: 0.3 }}
+        >
+          Projects
+        </motion.h2>
+
+        {/* Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-[72px]">
-          {projects.map((project) => (
-            <div
+          {projects.map((project, index) => (
+            <motion.div
               key={project._id}
               className="relative group bg-gray-900 rounded-2xl shadow-lg overflow-hidden"
+              variants={fadeInScale}
+              initial="hidden"
+              whileInView="visible"
+              transition={{
+                duration: 0.6,
+                delay: index * 0.15, // smooth stagger
+                ease: "easeOut",
+              }}
+              viewport={{ once: true, amount: 0.3 }}
             >
               {/* Project Image */}
               {project.image && (
@@ -32,21 +60,19 @@ const Projects = () => {
                   <img
                     src={project.image}
                     alt={project.title}
-                    className="w-full h-[312px] object-cover cursor-pointer" // 25% higher (250px → 312px)
+                    className="w-full h-[312px] object-cover cursor-pointer transition-transform duration-500 hover:scale-105"
                     onClick={() => setSelectedImage(project.image)}
                   />
-                  {/* Hover overlay */}
+                  {/* Hover Overlay */}
                   <div className="absolute top-0 left-0 w-full h-[75%] bg-black bg-opacity-80 -translate-y-full group-hover:translate-y-0 transition-transform duration-500 flex items-center justify-center p-4 text-gray-200 text-center">
                     <p>{project.description}</p>
                   </div>
                 </div>
               )}
 
-              {/* Bottom section */}
+              {/* Bottom Section */}
               <div className="p-4 flex flex-col">
-                <h3 className="text-xl font-semibold text-cyan-400">
-                  {project.title}
-                </h3>
+                <h3 className="text-xl font-semibold text-cyan-400">{project.title}</h3>
 
                 {project.skillsUsed && project.skillsUsed.length > 0 && (
                   <div className="mt-2 flex flex-wrap gap-2">
@@ -84,22 +110,28 @@ const Projects = () => {
                   )}
                 </div>
               </div>
-            </div>
+            </motion.div>
           ))}
         </div>
 
         {/* Popup Modal for Image */}
         {selectedImage && (
-          <div
+          <motion.div
             className="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-[9999]"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
             onClick={() => setSelectedImage(null)}
           >
-            <img
+            <motion.img
               src={selectedImage}
               alt="Full project"
               className="max-w-4xl max-h-[80vh] rounded-lg shadow-2xl border-4 border-cyan-400 object-contain"
+              initial={{ scale: 0.8, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ duration: 0.4, ease: "easeOut" }}
             />
-          </div>
+          </motion.div>
         )}
       </div>
     </section>

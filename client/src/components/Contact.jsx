@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
 import adminApi from "../api/adminApi";
 import {
   FaEnvelope,
@@ -8,6 +7,7 @@ import {
   FaLinkedin,
   FaGithub,
 } from "react-icons/fa";
+import { motion } from "framer-motion";
 
 const Contact = () => {
   const [contactInfo, setContactInfo] = useState({
@@ -26,9 +26,9 @@ const Contact = () => {
 
   const [loading, setLoading] = useState(false);
 
-  // Fetch contact info (only one record expected)
   useEffect(() => {
-    adminApi.get("/contact")
+    adminApi
+      .get("/contact")
       .then((res) => {
         if (Array.isArray(res.data) && res.data.length > 0) {
           setContactInfo(res.data[0]);
@@ -58,16 +58,72 @@ const Contact = () => {
     }
   };
 
+  // Smooth animation variants
+  const fadeUp = {
+    hidden: { opacity: 0, y: 40 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: {
+        duration: 0.8,
+        ease: [0.25, 0.1, 0.25, 1], // smooth ease-out cubic
+      },
+    },
+  };
+
+  const slideLeft = {
+    hidden: { opacity: 0, x: -60 },
+    visible: {
+      opacity: 1,
+      x: 0,
+      transition: {
+        type: "spring",
+        stiffness: 60,
+        damping: 18,
+        delay: 0.2,
+      },
+    },
+  };
+
+  const slideRight = {
+    hidden: { opacity: 0, x: 60 },
+    visible: {
+      opacity: 1,
+      x: 0,
+      transition: {
+        type: "spring",
+        stiffness: 60,
+        damping: 18,
+        delay: 0.3,
+      },
+    },
+  };
+
   return (
     <section
       id="contact"
-      className="min-h-screen bg-gray-900 text-white flex flex-col justify-center items-center py-16"
+      className="min-h-screen bg-gray-900 text-white flex flex-col justify-center items-center py-16 overflow-hidden"
     >
-      <h1 className="text-5xl font-bold text-cyan-400 mb-12">Contact Me</h1>
+      {/* Title Animation */}
+      <motion.h1
+        className="text-5xl font-bold text-cyan-400 mb-12"
+        variants={fadeUp}
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, amount: 0.3 }}
+      >
+        Contact Me
+      </motion.h1>
 
       <div className="max-w-6xl w-full grid grid-cols-1 md:grid-cols-2 gap-12 px-6">
-        {/* LEFT SIDE - Contact Info */}
-        <div className="space-y-6 flex flex-col justify-center">
+        {/* Left Side */}
+        <motion.div
+          className="space-y-6 flex flex-col justify-center"
+          variants={slideLeft}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, amount: 0.4 }}
+        >
           <div className="flex items-center gap-4">
             <FaEnvelope className="text-cyan-400 text-2xl" />
             <p className="text-lg">{contactInfo.email || "Loading..."}</p>
@@ -110,12 +166,16 @@ const Contact = () => {
               </a>
             </div>
           )}
-        </div>
+        </motion.div>
 
-        {/* RIGHT SIDE - Contact Form */}
-        <form
+        {/* Right Side - Form */}
+        <motion.form
           onSubmit={handleSubmit}
           className="bg-gray-800 p-8 rounded-2xl shadow-lg w-full space-y-6 hover:shadow-cyan-500/30 transition duration-300"
+          variants={slideRight}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, amount: 0.4 }}
         >
           <input
             type="text"
@@ -154,7 +214,7 @@ const Contact = () => {
           >
             {loading ? "Sending..." : "Send Message"}
           </button>
-        </form>
+        </motion.form>
       </div>
     </section>
   );

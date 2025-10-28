@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { motion } from "framer-motion";
 import adminApi from "../api/adminApi";
 import "./Experience.css";
 import work from "../assets/work.gif";
@@ -37,26 +38,61 @@ const Experience = () => {
     );
   }
 
+  // Animation Variants
+  const imageVariant = {
+    hidden: { opacity: 0, x: -120, rotate: -5 },
+    visible: {
+      opacity: 1,
+      x: 0,
+      rotate: 0,
+      transition: { duration: 1.2, ease: "easeOut" },
+    },
+  };
+
+  const textVariant = {
+    hidden: { opacity: 0, x: 120 },
+    visible: {
+      opacity: 1,
+      x: 0,
+      transition: { duration: 1.2, ease: "easeOut", delay: 0.2 },
+    },
+  };
+
   return (
     <section
-      id="experience"
-      className="min-h-screen bg-gray-900 text-white flex items-center justify-center px-6 py-16"
-    >
+  id="experience"
+  className="bg-gray-900 text-white flex items-center justify-center px-6 py-10 md:py-12 overflow-hidden mt-0"
+>
+
+
       <div className="flex flex-col md:flex-row w-full max-w-6xl mx-auto md:gap-[115px]">
-        {/* Left Side - Image */}
-        <div className="md:w-[30%] w-full flex justify-center items-center mb-10 md:mb-0">
+
+        {/* Left Side - Animated Image */}
+        <motion.div
+          variants={imageVariant}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, amount: 0.4 }}
+          className="md:w-[30%] w-full flex justify-center items-center mb-10 md:mb-0"
+        >
           <div className="w-full max-w-[500px] h-[350px] bg-gray-900 rounded-2xl shadow-lg overflow-hidden">
             <img
               src={work}
               alt="Experience Illustration"
-              className=" object-cover transition-transform duration-500 hover:scale-105"
+              className="object-cover transition-transform duration-500 hover:scale-105"
             />
           </div>
-        </div>
+        </motion.div>
 
-        {/* Right Side - Experience List */}
-        <div className="md:w-[55%] w-full">
-          <h2 className="text-4xl font-bold text-cyan-400 mb-10 text-center md:text-left">
+        {/* Right Side - Animated Experience List */}
+        <motion.div
+          variants={textVariant}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: false, amount: 0.3 }}
+          className="md:w-[55%] w-full"
+        >
+          <h2 className="text-4xl font-bold text-cyan-400 mb-14 mt-4 text-center md:text-left">
             Experience
           </h2>
 
@@ -67,7 +103,7 @@ const Experience = () => {
                 <div className="absolute -left-[10px] top-1.5 w-4 h-4 bg-cyan-400 rounded-full shadow-[0_0_10px_#00ffff]"></div>
 
                 {/* Experience Content */}
-                <div className="ml-4 flex flex-col sm:flex-row sm:justify-between sm:items-center bg-[#111827]/80 p-5 rounded-xl shadow-lg transition-all duration-300 ">
+                <div className="ml-4 flex flex-col sm:flex-row sm:justify-between sm:items-center bg-[#111827]/80 p-5 rounded-xl shadow-lg transition-all duration-300">
                   {/* Left - Company Info */}
                   <div>
                     <h3 className="text-2xl font-semibold text-cyan-400">
@@ -76,14 +112,13 @@ const Experience = () => {
                     <p className="text-gray-300 font-medium">
                       {exp.designation || "Role not specified"}
                     </p>
-                      <p className="text-sm text-gray-400">
+                    <p className="text-sm text-gray-400">
                       📍 {exp.location || "Location not available"}
                     </p>
                     <p className="text-sm text-gray-400">
                       💼 Type: {exp.type || "Not mentioned"}
                     </p>
-                   
-                   
+
                     {exp.description && (
                       <p className="text-gray-300 mt-2 italic">
                         {exp.description}
@@ -91,15 +126,15 @@ const Experience = () => {
                     )}
                   </div>
 
-                  {/* Right - Duration */}
-                  <div className="text-sm text-gray-400 mt-3 sm:mt-0 sm:text-right">
+                  {/* Right - Duration (Single Line, No Wrap) */}
+                  <div className="text-sm text-gray-400 mt-3 sm:mt-0 sm:text-right whitespace-nowrap">
                     🗓 {exp.from} - {exp.to}
                   </div>
                 </div>
               </div>
             ))}
           </div>
-        </div>
+        </motion.div>
       </div>
     </section>
   );

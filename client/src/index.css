@@ -7,3 +7,15 @@ body {
   color: white;
   font-family: 'Poppins', sans-serif;
 }
+/* ===== Hide scrollbar globally ===== */
+
+/* For Chrome, Safari, Edge */
+::-webkit-scrollbar {
+  display: none;
+}
+
+/* For Firefox */
+* {
+  scrollbar-width: none;
+  -ms-overflow-style: none; /* IE and Edge */
+}
