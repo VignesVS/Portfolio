@@ -10,6 +10,9 @@ import Skills from "./components/Skills";
 import Contact from "./components/Contact";
 import CertificationsPage from "./pages/CertificationsPage";
 import Experience from "./components/Experience";
+import Resume from "./components/Resume";
+import Education from "./components/Education";
+
 
 
 const PrivateRoute = ({ children }) => {
@@ -26,8 +29,10 @@ function App() {
           path="/"
           element={
             <>
+            
               <Hero />
               <About />
+              <Education/>
               <Experience/>
               <Skills />
               <Contact />
@@ -37,7 +42,7 @@ function App() {
 
         <Route path="/projects" element={<Projects />} />
         <Route path="/certifications" element={<CertificationsPage />} />
-
+        <Route path="/resume" element={<Resume />} />
         <Route path="/admin/login" element={<AdminLogin />} />
 
         <Route

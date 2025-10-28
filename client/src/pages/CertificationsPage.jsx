@@ -1,19 +1,22 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
+import adminApi from "../api/adminApi";
 
 const CertificationsPage = () => {
   const [certifications, setCertifications] = useState([]);
   const [modalImage, setModalImage] = useState(null);
 
   useEffect(() => {
-    axios
-      .get("http://localhost:5000/api/certifications")
+    adminApi
+      .get("/certifications")
       .then((res) => setCertifications(res.data))
       .catch((err) => console.log(err));
   }, []);
 
   return (
-    <div className="min-h-screen bg-gray-900 text-white py-10">
+    <div
+      id="certifications"
+      className="min-h-screen bg-gray-900 text-white pt-32 pb-10" // 🔹 added pt-32 (adjust if needed)
+    >
       <h1 className="text-5xl font-bold text-cyan-400 text-center mb-12">
         Certifications
       </h1>
@@ -47,10 +50,10 @@ const CertificationsPage = () => {
             </div>
 
             {/* Static info below */}
-            <p className="mt-4 text-lg text-gray-300 font-semibold">{cert.name}</p>
-            {cert.date && (
-              <p className="text-sm text-gray-400">{cert.date}</p>
-            )}
+            <p className="mt-4 text-lg text-gray-300 font-semibold">
+              {cert.name}
+            </p>
+            {cert.date && <p className="text-sm text-gray-400">{cert.date}</p>}
           </div>
         ))}
       </div>

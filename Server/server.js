@@ -14,7 +14,8 @@ import experienceRoutes from "./routes/experienceRoutes.js";
 import authRoutes from "./routes/authRoutes.js";
 import aboutRoutes from "./routes/aboutRoutes.js";
 import contactRoutes from "./routes/contactRoutes.js";
-
+import resumeRoutes from "./routes/resumeRoutes.js";
+import educationRoutes from "./routes/educationRoutes.js"
 // Debug .env variables
 
 
@@ -35,6 +36,9 @@ app.use("/api/certifications", certificationRoutes);
 app.use("/api/experience", experienceRoutes);
 app.use("/api/contact", contactRoutes);
 app.use("/api/auth", authRoutes);
+app.use("/api/resume", resumeRoutes);
+app.use("/api/education",educationRoutes);
+
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

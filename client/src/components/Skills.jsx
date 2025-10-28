@@ -1,13 +1,13 @@
 import React, { useEffect, useState, useRef } from 'react';
 import axios from 'axios';
+import adminApi from "../api/adminApi";
 
 const Skills = () => {
   const [skills, setSkills] = useState([]);
   const scrollRef = useRef(null);
 
   useEffect(() => {
-    axios
-      .get('http://localhost:5000/api/skills')
+    adminApi.get("/skills")
       .then(res => {
         console.log('Fetched skills:', res.data); // ✅ Debug print
         setSkills(res.data);

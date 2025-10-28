@@ -5,14 +5,12 @@ import {
   updateExperience,
   deleteExperience,
 } from "../controllers/MyworkController.js";
-import { protect } from "../middleware/authMiddleware.js"; // 👈 this line
 
 const router = express.Router();
 
-// routes
 router.get("/", getExperiences);
-router.post("/", protect, addExperience);     // 👈 protected
-router.put("/:id",protect, updateExperience); // 👈 protected
-router.delete("/:id",protect, deleteExperience); // 👈 protected
+router.post("/", addExperience);
+router.put("/:id", updateExperience);
+router.delete("/:id", deleteExperience);
 
 export default router;

@@ -1,9 +1,10 @@
 import express from "express";
-import { getContactInfo, sendMessage } from "../controllers/contactController.js";
+import { getContact, updateContact } from "../controllers/contactController.js";
 
 const router = express.Router();
 
-router.get("/", getContactInfo);              // fetch contact info
-router.post("/sendMessage", sendMessage);     // send message + email
+// ✅ Only these two routes are needed
+router.get("/", getContact);
+router.put("/", updateContact);
 
 export default router;

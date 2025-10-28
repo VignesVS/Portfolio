@@ -1,16 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import adminApi from "../api/adminApi";
 
 const About = () => {
   const [aboutData, setAboutData] = useState({ content: '', image: '' });
 
   useEffect(() => {
-    axios
-      .get('http://localhost:5000/api/about')
+    adminApi.get("/about")
       .then((res) => {
-        if (res.data) {
-          setAboutData(res.data); // res.data should have content and image
-        }
+        if (res.data) setAboutData(res.data);
       })
       .catch((err) => console.log('Error fetching about:', err));
   }, []);
@@ -22,11 +20,13 @@ const About = () => {
         {/* Left side: Image (30%) */}
         <div className="md:flex-[0.3] flex justify-center md:justify-start w-full">
           {aboutData.image && (
-            <img
-              src={aboutData.image}
-              alt="About Me"
-              className="w-full h-auto rounded-2xl shadow-xl object-cover"
-            />
+            <div >
+              <img
+  src={aboutData.image}
+  alt="About Me"
+  className="w-full h-auto rounded-xl object-cover opacity-95 hover:opacity-100 transition spinning-image"
+/>
+            </div>
           )}
         </div>
 

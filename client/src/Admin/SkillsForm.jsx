@@ -133,6 +133,7 @@ const SkillForm = () => {
           className="p-2 rounded bg-gray-700 text-white"
           required
         />
+
         <input
           type="text"
           name="category"
@@ -141,20 +142,28 @@ const SkillForm = () => {
           onChange={handleChange}
           className="p-2 rounded bg-gray-700 text-white"
         />
-        <input
-          type="text"
+
+        {/* Dropdown for Level */}
+        <select
           name="level"
-          placeholder="Level (Beginner, Intermediate, Expert)"
           value={newSkill.level}
           onChange={handleChange}
           className="p-2 rounded bg-gray-700 text-white"
-        />
+          required
+        >
+          <option value="">Select Level</option>
+          <option value="Beginner">Beginner</option>
+          <option value="Intermediate">Intermediate</option>
+          <option value="Expert">Expert</option>
+        </select>
+
         <input
           type="file"
           accept="image/*"
           onChange={handleLogoChange}
           className="text-white"
         />
+
         {preview && (
           <img
             src={preview}
@@ -162,6 +171,7 @@ const SkillForm = () => {
             className="w-40 h-40 object-cover rounded-lg shadow-lg mt-2"
           />
         )}
+
         <button
           type="submit"
           className="bg-cyan-500 hover:bg-cyan-600 py-2 rounded font-semibold transition-colors"

@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
+import adminApi from "../api/adminApi";
 
 const Projects = () => {
   const [projects, setProjects] = useState([]);
   const [selectedImage, setSelectedImage] = useState(null);
 
   useEffect(() => {
-    axios
-      .get("http://localhost:5000/api/projects")
+    adminApi
+      .get("/projects")
       .then((res) => setProjects(res.data))
       .catch((err) => console.log(err));
   }, []);
@@ -19,30 +19,28 @@ const Projects = () => {
           Projects
         </h2>
 
-        {/* 2-column grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        {/* Grid with 3cm gap */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-[72px]">
           {projects.map((project) => (
             <div
               key={project._id}
               className="relative group bg-gray-900 rounded-2xl shadow-lg overflow-hidden"
             >
               {/* Project Image */}
-            {/* Project Image */}
-{project.image && (
-  <div className="relative">
-    <img
-      src={project.image}
-      alt={project.title}
-      className="w-full h-[250px] object-cover cursor-pointer" // increased height by 25%
-      onClick={() => setSelectedImage(project.image)}
-    />
-    {/* Hover overlay */}
-    <div className="absolute top-0 left-0 w-full h-[75%] bg-black bg-opacity-80 -translate-y-full group-hover:translate-y-0 transition-transform duration-500 flex items-center justify-center p-4 text-gray-200 text-center">
-      <p>{project.description}</p>
-    </div>
-  </div>
-)}
-
+              {project.image && (
+                <div className="relative">
+                  <img
+                    src={project.image}
+                    alt={project.title}
+                    className="w-full h-[312px] object-cover cursor-pointer" // 25% higher (250px → 312px)
+                    onClick={() => setSelectedImage(project.image)}
+                  />
+                  {/* Hover overlay */}
+                  <div className="absolute top-0 left-0 w-full h-[75%] bg-black bg-opacity-80 -translate-y-full group-hover:translate-y-0 transition-transform duration-500 flex items-center justify-center p-4 text-gray-200 text-center">
+                    <p>{project.description}</p>
+                  </div>
+                </div>
+              )}
 
               {/* Bottom section */}
               <div className="p-4 flex flex-col">

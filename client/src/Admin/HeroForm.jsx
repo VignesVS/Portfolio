@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { toast, ToastContainer } from "react-toastify";
+import adminApi from "../api/adminApi"
 import "react-toastify/dist/ReactToastify.css";
 
 const HeroForm = () => {
@@ -17,28 +18,29 @@ const HeroForm = () => {
 
   // Fetch existing profile
   useEffect(() => {
-    const fetchProfile = async () => {
-      try {
-        const res = await axios.get("http://localhost:5000/api/profile");
-        if (res.data) {
-          setProfile({
-            name: res.data.name || "",
-            role: res.data.role || "",
-            description: res.data.description || "",
-            profileImage: res.data.profileImage || "",
-            linkedin: res.data.socialLinks?.linkedin || "",
-            github: res.data.socialLinks?.github || "",
-          });
-        }
-      } catch (err) {
-        console.error("Error fetching profile:", err);
-        toast.error("❌ Failed to fetch profile details.");
-      } finally {
-        setLoading(false);
+  const fetchProfile = async () => {
+    try {
+      const res = await adminApi.get("/profile");
+      if (res.data) {
+        setProfile({
+          name: res.data.name || "",
+          role: res.data.role || "",
+          description: res.data.description || "",
+          profileImage: res.data.profileImage || "",
+          linkedin: res.data.socialLinks?.linkedin || "",
+          github: res.data.socialLinks?.github || "",
+        });
       }
-    };
-    fetchProfile();
-  }, []);
+    } catch (err) {
+      console.error("Error fetching profile:", err);
+      toast.error("❌ Failed to fetch profile details.");
+    } finally {
+      setLoading(false);
+    }
+  };
+  fetchProfile();
+}, []);
+
 
   // Handle text change
   const handleChange = (e) => {
@@ -64,7 +66,7 @@ const HeroForm = () => {
       if (file) formData.append("profileImage", file);
       else formData.append("profileImage", profile.profileImage);
 
-      await axios.put("http://localhost:5000/api/profile", formData, {
+      await await adminApi.put("/profile",  formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
 

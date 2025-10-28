@@ -20,7 +20,7 @@ const parser = multer({ storage });
 
 // Routes
 router.get("/", getProfile);
-router.put("/",protect, upload.single("profileImage"), updateProfile);
+router.put("/", upload.single("profileImage"), updateProfile);
 
 
 export default router;

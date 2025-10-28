@@ -13,11 +13,24 @@ cloudinary.config({
 
 const storage = new CloudinaryStorage({
   cloudinary,
-  params: {
-    folder: "portfolio_uploads",
-    allowed_formats: ["jpg", "png", "jpeg", "webp"],
+  params: async (req, file) => {
+    let resourceType = "image";
+    let allowedFormats = ["jpg", "png", "jpeg", "webp"];
+
+    // If it's a PDF (resume), handle as raw
+    if (file.mimetype === "application/pdf") {
+      resourceType = "raw";
+      allowedFormats = ["pdf"];
+    }
+
+    return {
+      folder: "portfolio_uploads",
+      resource_type: resourceType,
+      allowed_formats: allowedFormats,
+    };
   },
 });
+
 
 
 

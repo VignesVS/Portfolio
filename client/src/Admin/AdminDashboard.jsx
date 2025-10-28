@@ -6,6 +6,9 @@ import SkillsForm from "./SkillsForm";
 import ProjectsForm from "./ProjectsForm";
 import CertificationsForm from "./CertificationsForm";
 import ExperienceForm from "./ExperienceForm";
+import ContactForm from "./ContactForm";
+import ResumeForm from "./ResumeForm";
+import EducationForm from "./EducationForm";
 
 
 const AdminDashboard = () => {
@@ -19,15 +22,15 @@ const AdminDashboard = () => {
   };
 
   // ✅ Auto logout after 15 minutes
-  useEffect(() => {
-    const autoLogoutTimer = setTimeout(() => {
-      localStorage.removeItem("adminToken");
-      alert("Session expired. Please log in again.");
-      navigate("/admin/login");
-    }, 15 * 60 * 1000); // 15 minutes
+  // useEffect(() => {
+  //   const autoLogoutTimer = setTimeout(() => {
+  //     localStorage.removeItem("adminToken");
+  //     alert("Session expired. Please log in again.");
+  //     navigate("/admin/login");
+  //   }, 15 * 60 * 1000); // 15 minutes
 
-    return () => clearTimeout(autoLogoutTimer);
-  }, [navigate]);
+  //   return () => clearTimeout(autoLogoutTimer);
+  // }, [navigate]);
 
   // ✅ Logout when tab/window is closed or refreshed
   // useEffect(() => {
@@ -56,6 +59,12 @@ const AdminDashboard = () => {
         return <ProjectsForm />;
       case "certifications":
         return <CertificationsForm />;
+      case "contact":
+        return <ContactForm />;
+      case "resume":
+        return <ResumeForm/>
+      case "education":
+        return <EducationForm/>
       default:
         return <HeroForm />;
     }
@@ -78,13 +87,13 @@ const AdminDashboard = () => {
 
       {/* Tabs */}
       <div className="flex justify-center gap-4 mb-8 flex-wrap">
-        {["hero", "about", "skills", "experience","projects", "certifications"].map((tab) => (
+        {["hero", "about", "skills", "education","experience", "projects", "certifications", "contact", "resume"].map((tab) => (
           <button
             key={tab}
             onClick={() => setActiveTab(tab)}
             className={`px-4 py-2 rounded font-semibold transition-colors ${activeTab === tab
-                ? "bg-cyan-500 text-gray-900"
-                : "bg-gray-700 hover:bg-gray-600"
+              ? "bg-cyan-500 text-gray-900"
+              : "bg-gray-700 hover:bg-gray-600"
               }`}
           >
             {tab.charAt(0).toUpperCase() + tab.slice(1)}
