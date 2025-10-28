@@ -72,7 +72,7 @@ const Education = () => {
           viewport={{ once: true, amount: 0.4 }}
           className="md:w-[25%] w-full flex justify-center items-center mb-10 md:mb-0"
         >
-          <div className="w-64 h-64 bg-gray-800 flex items-center justify-center text-gray-500 rounded-xl shadow-lg">
+          <div className=" hidden md:block w-72 h-72 bg-gray-800 flex items-center justify-center text-gray-500 rounded-xl shadow-lg">
             <img
               src={image}
               alt="Education Illustration"

@@ -50,7 +50,7 @@ const About = () => {
             <img
               src={aboutData.image}
               alt="About Me"
-              className="w-full h-auto rounded-xl object-cover opacity-95 hover:opacity-100 transition-all duration-300"
+              className=" w-full h-auto rounded-xl object-cover opacity-95 hover:opacity-100 transition-all duration-300"
             />
           </motion.div>
         )}
