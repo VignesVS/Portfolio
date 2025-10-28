@@ -22,28 +22,28 @@ const AdminDashboard = () => {
   };
 
   // ✅ Auto logout after 15 minutes
-  // useEffect(() => {
-  //   const autoLogoutTimer = setTimeout(() => {
-  //     localStorage.removeItem("adminToken");
-  //     alert("Session expired. Please log in again.");
-  //     navigate("/admin/login");
-  //   }, 15 * 60 * 1000); // 15 minutes
+  useEffect(() => {
+    const autoLogoutTimer = setTimeout(() => {
+      localStorage.removeItem("adminToken");
+      alert("Session expired. Please log in again.");
+      navigate("/admin/login");
+    }, 15 * 60 * 1000); // 15 minutes
 
-  //   return () => clearTimeout(autoLogoutTimer);
-  // }, [navigate]);
+    return () => clearTimeout(autoLogoutTimer);
+  }, [navigate]);
 
   // ✅ Logout when tab/window is closed or refreshed
-  // useEffect(() => {
-  //   const handleBeforeUnload = () => {
-  //     localStorage.removeItem("adminToken");
-  //   };
+  useEffect(() => {
+    const handleBeforeUnload = () => {
+      localStorage.removeItem("adminToken");
+    };
 
-  //   window.addEventListener("beforeunload", handleBeforeUnload);
+    window.addEventListener("beforeunload", handleBeforeUnload);
 
-  //   return () => {
-  //     window.removeEventListener("beforeunload", handleBeforeUnload);
-  //   };
-  // }, []);
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+    };
+  }, []);
 
   const renderTab = () => {
     switch (activeTab) {
