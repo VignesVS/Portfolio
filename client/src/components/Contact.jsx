@@ -8,6 +8,8 @@ import {
   FaGithub,
 } from "react-icons/fa";
 import { motion } from "framer-motion";
+import { toast, ToastContainer, Slide } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const Contact = () => {
   const [contactInfo, setContactInfo] = useState({
@@ -47,56 +49,65 @@ const Contact = () => {
     e.preventDefault();
     setLoading(true);
     try {
-      adminApi.put("contact/sendMessage", formData);
-      alert("✅ Message sent successfully! I’ll get back to you soon.");
+      await adminApi.post("/messages", formData);
+
+      toast.success("✅ Message sent successfully!", {
+        position: "top-right",
+        autoClose: 2500,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        transition: Slide,
+        style: {
+          background: "rgba(0, 20, 30, 0.8)",
+          backdropFilter: "blur(8px)",
+          border: "1px solid rgba(34,211,238,0.4)",
+          color: "#E0F2FE",
+          borderRadius: "12px",
+          fontFamily: "Poppins, sans-serif",
+          boxShadow: "0 0 15px rgba(34,211,238,0.3)",
+        },
+      });
+
       setFormData({ name: "", email: "", message: "" });
     } catch (err) {
       console.error("Error sending message:", err);
-      alert("❌ Error sending message. Please try again later.");
+      toast.error("❌ Error sending message. Try again later.", {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        draggable: true,
+        transition: Slide,
+        style: {
+          background: "rgba(50,0,0,0.8)",
+          backdropFilter: "blur(8px)",
+          border: "1px solid rgba(239,68,68,0.4)",
+          color: "#FCA5A5",
+          borderRadius: "12px",
+          fontFamily: "Poppins, sans-serif",
+          boxShadow: "0 0 15px rgba(239,68,68,0.3)",
+        },
+      });
     } finally {
       setLoading(false);
     }
   };
 
-  // Smooth animation variants
   const fadeUp = {
     hidden: { opacity: 0, y: 40 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: {
-        duration: 0.8,
-        ease: [0.25, 0.1, 0.25, 1], // smooth ease-out cubic
-      },
-    },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.8 } },
   };
 
   const slideLeft = {
     hidden: { opacity: 0, x: -60 },
-    visible: {
-      opacity: 1,
-      x: 0,
-      transition: {
-        type: "spring",
-        stiffness: 60,
-        damping: 18,
-        delay: 0.2,
-      },
-    },
+    visible: { opacity: 1, x: 0, transition: { duration: 0.8 } },
   };
 
   const slideRight = {
     hidden: { opacity: 0, x: 60 },
-    visible: {
-      opacity: 1,
-      x: 0,
-      transition: {
-        type: "spring",
-        stiffness: 60,
-        damping: 18,
-        delay: 0.3,
-      },
-    },
+    visible: { opacity: 1, x: 0, transition: { duration: 0.8 } },
   };
 
   return (
@@ -104,7 +115,6 @@ const Contact = () => {
       id="contact"
       className="min-h-screen bg-gray-900 text-white flex flex-col justify-center items-center py-16 overflow-hidden"
     >
-      {/* Title Animation */}
       <motion.h1
         className="text-5xl font-bold text-cyan-400 mb-12"
         variants={fadeUp}
@@ -116,7 +126,6 @@ const Contact = () => {
       </motion.h1>
 
       <div className="max-w-6xl w-full grid grid-cols-1 md:grid-cols-2 gap-12 px-6">
-        {/* Left Side */}
         <motion.div
           className="space-y-6 flex flex-col justify-center"
           variants={slideLeft}
@@ -168,7 +177,6 @@ const Contact = () => {
           )}
         </motion.div>
 
-        {/* Right Side - Form */}
         <motion.form
           onSubmit={handleSubmit}
           className="bg-gray-800 p-8 rounded-2xl shadow-lg w-full space-y-6 hover:shadow-cyan-500/30 transition duration-300"
@@ -216,6 +224,9 @@ const Contact = () => {
           </button>
         </motion.form>
       </div>
+
+      {/* Toast Container */}
+      <ToastContainer newestOnTop />
     </section>
   );
 };

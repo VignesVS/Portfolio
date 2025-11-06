@@ -16,6 +16,7 @@ import aboutRoutes from "./routes/aboutRoutes.js";
 import contactRoutes from "./routes/contactRoutes.js";
 import resumeRoutes from "./routes/resumeRoutes.js";
 import educationRoutes from "./routes/educationRoutes.js"
+import messageRoutes from "./routes/messageRoutes.js";
 // Debug .env variables
 
 
@@ -38,6 +39,7 @@ app.use("/api/contact", contactRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/resume", resumeRoutes);
 app.use("/api/education",educationRoutes);
+app.use("/api/messages", messageRoutes);
 
 
 const PORT = process.env.PORT || 5000;
