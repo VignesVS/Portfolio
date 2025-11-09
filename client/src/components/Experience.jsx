@@ -92,9 +92,14 @@ const Experience = () => {
           viewport={{ once: false, amount: 0.3 }}
           className="md:w-[55%] w-full"
         >
-          <h2 className="text-4xl font-bold text-cyan-400 mb-14 mt-4 text-center md:text-left">
-            Experience
-          </h2>
+        <motion.h2
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 1 }}
+          className="text-4xl font-bold text-cyan-400 mb-12 text-center tracking-wide"
+        >
+          Experience
+        </motion.h2>
 
           <div className="relative pl-6 border-l-2 border-cyan-400/40 space-y-10">
             {experiences.map((exp) => (

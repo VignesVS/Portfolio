@@ -1,6 +1,6 @@
-// app.js
+
 import dotenv from "dotenv";
-dotenv.config();  // ✅ must be first
+dotenv.config(); 
 
 import express from "express";
 import cors from "cors";
@@ -17,18 +17,18 @@ import contactRoutes from "./routes/contactRoutes.js";
 import resumeRoutes from "./routes/resumeRoutes.js";
 import educationRoutes from "./routes/educationRoutes.js"
 import messageRoutes from "./routes/messageRoutes.js";
-// Debug .env variables
+
 
 
 connectDB();
 
 const app = express();
 
-// Middleware
+
 app.use(cors());
 app.use(express.json());
 
-// Routes
+
 app.use("/api/profile", profileRoutes);
 app.use("/api/about", aboutRoutes);
 app.use("/api/skills", skillRoutes);
@@ -44,3 +44,4 @@ app.use("/api/messages", messageRoutes);
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+// export default app;
